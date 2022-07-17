@@ -179,7 +179,8 @@ public class ManageGame : MonoBehaviour
                 // Player
                 if (level.GetPixel(i, j) == Color.green)
                 {
-                    Debug.Log(i + " " + j);
+                    Debug.Log(die);
+                    Debug.Log(die.GetComponentInChildren<DieController>());
                     die.GetComponentInChildren<DieController>().position = new Vector2Int(i,j);
                     
                     die.transform.position = new Vector3(i - width / 2, 1, j - length / 2);
