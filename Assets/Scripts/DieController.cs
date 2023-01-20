@@ -101,7 +101,7 @@ public class DieController : MonoBehaviour
     IEnumerator record(string msg)
     {
         //byte[] myData = System.Text.Encoding.UTF8.GetBytes("This is some test data");
-        using (UnityWebRequest www = UnityWebRequest.Put("https://ptsv3.com/t/testunity/post/", msg))
+        using (UnityWebRequest www = UnityWebRequest.Put("https://localhost/LuckingOut/service.php", msg))
         {
             yield return www.SendWebRequest();
 
