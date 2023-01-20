@@ -101,7 +101,21 @@ public class DieController : MonoBehaviour
     IEnumerator record(string msg)
     {
         //byte[] myData = System.Text.Encoding.UTF8.GetBytes("This is some test data");
-        using (UnityWebRequest www = UnityWebRequest.Put("https://localhost/LuckingOut/service.php", msg))
+        string url = Application.absoluteURL;
+        string[] urlSplit = url.Split('?');
+        string paramsString = "";
+        string studyId = "default";
+
+        if(urlSplit.Length > 1){
+            paramsString = urlSplit[1];
+            string[] paramSplit = paramsString.Split("&");
+            if(paramSplit.Length > 0){
+                studyId = paramSplit[0].Split("=")[1];
+            }
+        }
+
+
+        using (UnityWebRequest www = UnityWebRequest.Put("http://localhost/LuckingOut/service.php", studyId + "\t"+ msg))
         {
             yield return www.SendWebRequest();
 
