@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.Networking;
 
 public class DieController : MonoBehaviour
 {
@@ -97,6 +98,22 @@ public class DieController : MonoBehaviour
         leftFace.transform.position = new Vector3(transform.position.x - 1.05f, .6f, transform.position.z);
     }
 
+    void record(myObject){
+        string json = JsonUtility.ToJson(myObject);
+        Debug.Log("record" + " => " + json);
+        UnityWebRequest www = UnityWebRequest.Post("https://ptsv3.com/t/testunity/post/", json);
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            Debug.Log("HTTP post complete!");
+        }
+    }
+
    
 
     void MoveBack()
@@ -111,6 +128,7 @@ public class DieController : MonoBehaviour
         
         Debug.Log(sides[Vector3.up] + " => " + newSides[Vector3.up]);
         sides = newSides;
+        record("MoveBack");
 
         if (chargeDirection != Vector3.zero)
         {
@@ -119,6 +137,8 @@ public class DieController : MonoBehaviour
             else if (chargeDirection == Vector3.down) chargeDirection = Vector3.forward;
             //charge side faces down, resets
             else if (chargeDirection == Vector3.back) chargeDirection = Vector3.zero;
+
+            
         }
     }
    
@@ -134,6 +154,7 @@ public class DieController : MonoBehaviour
 
         Debug.Log(sides[Vector3.up] + " => " + newSides[Vector3.up]);
         sides = newSides;
+        record("MoveForward");
 
         if (chargeDirection != Vector3.zero)
         {
@@ -142,6 +163,8 @@ public class DieController : MonoBehaviour
             else if (chargeDirection == Vector3.down) chargeDirection = Vector3.back;
             //charge side faces down, resets
             else if (chargeDirection == Vector3.forward) chargeDirection = Vector3.zero;
+
+
         }
     }
 
@@ -157,6 +180,7 @@ public class DieController : MonoBehaviour
         
         Debug.Log(sides[Vector3.up] + " => " + newSides[Vector3.up]);
         sides = newSides;
+        record("MoveLeft");
 
         if (chargeDirection != Vector3.zero)
         {
@@ -181,6 +205,7 @@ public class DieController : MonoBehaviour
 
         Debug.Log(sides[Vector3.up] + " => " + newSides[Vector3.up]);
         sides = newSides;
+        record("MoveRight");
 
         if (chargeDirection != Vector3.zero)
         {
