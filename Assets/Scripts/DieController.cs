@@ -98,10 +98,11 @@ public class DieController : MonoBehaviour
         leftFace.transform.position = new Vector3(transform.position.x - 1.05f, .6f, transform.position.z);
     }
 
-    void record(myObject){
-        string json = JsonUtility.ToJson(myObject);
+    IEnumerable record(string msg)
+    {
+        string json = msg;// "{'message':"+ msg + "}";
         Debug.Log("record" + " => " + json);
-        UnityWebRequest www = UnityWebRequest.Post("https://ptsv3.com/t/testunity/post/", json);
+        UnityWebRequest www = UnityWebRequest.Put("https://ptsv3.com/t/testunity/post/", json);
         yield return www.SendWebRequest();
 
         if (www.result != UnityWebRequest.Result.Success)
@@ -128,7 +129,7 @@ public class DieController : MonoBehaviour
         
         Debug.Log(sides[Vector3.up] + " => " + newSides[Vector3.up]);
         sides = newSides;
-        record("MoveBack");
+        StartCoroutine(record("MoveBack"));
 
         if (chargeDirection != Vector3.zero)
         {
@@ -154,7 +155,7 @@ public class DieController : MonoBehaviour
 
         Debug.Log(sides[Vector3.up] + " => " + newSides[Vector3.up]);
         sides = newSides;
-        record("MoveForward");
+        StartCoroutine(record("MoveForward"));
 
         if (chargeDirection != Vector3.zero)
         {
@@ -180,7 +181,7 @@ public class DieController : MonoBehaviour
         
         Debug.Log(sides[Vector3.up] + " => " + newSides[Vector3.up]);
         sides = newSides;
-        record("MoveLeft");
+        StartCoroutine(record("MoveLeft"));
 
         if (chargeDirection != Vector3.zero)
         {
@@ -205,7 +206,7 @@ public class DieController : MonoBehaviour
 
         Debug.Log(sides[Vector3.up] + " => " + newSides[Vector3.up]);
         sides = newSides;
-        record("MoveRight");
+        StartCoroutine(record("MoveRight"));
 
         if (chargeDirection != Vector3.zero)
         {
