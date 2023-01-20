@@ -98,6 +98,25 @@ public class DieController : MonoBehaviour
         leftFace.transform.position = new Vector3(transform.position.x - 1.05f, .6f, transform.position.z);
     }
 
+    IEnumerator record(string msg)
+    {
+        //byte[] myData = System.Text.Encoding.UTF8.GetBytes("This is some test data");
+        using (UnityWebRequest www = UnityWebRequest.Put("https://ptsv3.com/t/testunity/post/", msg))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log("Upload complete!");
+            }
+        }
+    }
+
+    /*
     IEnumerable record(string msg)
     {
         string json = msg;// "{'message':"+ msg + "}";
@@ -114,6 +133,7 @@ public class DieController : MonoBehaviour
             Debug.Log("HTTP post complete!");
         }
     }
+    */
 
    
 
