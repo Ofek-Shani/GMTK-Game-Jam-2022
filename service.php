@@ -12,12 +12,9 @@ foreach ($file_split as $key_value) {
     $key = $kv_split[0];
     $value = $kv_split[1];
 
-    $variable_map[$key] = $value;
+    $variable_map[$key] = trim($value);
 
 }
-
-
- 
 
 // for testing locally
 
@@ -32,19 +29,21 @@ error_log("About to connect!". json_encode($variable_map) ."\n", 3, "./tmp/my-er
 //echo json_encode($variable_map), "\n";
 
 
-error_log("$db". $db ."\n", 3, "./tmp/my-errors.log");
-error_log("$user". $user ."\n", 3, "./tmp/my-errors.log");
-error_log("$db". $db ."\n", 3, "./tmp/my-errors.log");
-error_log("$pswd". $pswd ."\n", 3, "./tmp/my-errors.log");
-error_log("$host". $host ."\n", 3, "./tmp/my-errors.log");
-error_log("$port". $port ."\n", 3, "./tmp/my-errors.log");
+error_log("db: ". $db ."\n", 3, "./tmp/my-errors.log");
+error_log("user: ". $user ."\n", 3, "./tmp/my-errors.log");
+error_log("pswd: ". $pswd ."\n", 3, "./tmp/my-errors.log");
+error_log("host: ". $host ."\n", 3, "./tmp/my-errors.log");
+error_log("port: ". $port ."\n", 3, "./tmp/my-errors.log");
 
 
 
 $conn = mysqli_connect($host, $user, $pswd, $db, $port);
 
-
-if ($conn->connect_errno) {
+if(!$conn){
+    // mysqli_connect_error()
+    error_log("Error: ".mysqli_connect_error()."\n", 3, "./tmp/my-errors.log");
+}
+else if ($conn->connect_errno) {
     error_log("$conn->connect_error", 3, "./tmp/my-errors.log");
     echo "Failed to connect to MySQL: " . $conn->connect_error;
     exit();
@@ -84,10 +83,12 @@ $ip = get_ip_address();
 
 //above fine
 
+//$comp = preg_split('/\s+/', $var);
 
-$input_split = explode("\t",$entityBody);
+$input_split = preg_split('/\s+/',$entityBody);
 
 
+//$input_split = explode("\t",$entityBody);
 
 $user = mysqli_real_escape_string($conn, $input_split[0]);
 
@@ -98,8 +99,11 @@ $action = mysqli_real_escape_string($conn, $input_split[1]);
 error_log($now_str."\t".$user."\n", 3, "./tmp/my-errors.log");
 error_log($now_str."\t".$action."\n", 3, "./tmp/my-errors.log");
 
-
 //run the query to search for the username and password the match
+
+if(strlen($user) == 0 || strlen($action) == 0){
+    return;
+}
 
 $query = "INSERT IGNORE INTO log (id, user, action, ip, timestamp) VALUES (NULL, '$user', '$action', '$ip', now())";
 
