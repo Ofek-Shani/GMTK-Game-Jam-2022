@@ -9,12 +9,12 @@ $variable_map = [];
 foreach ($file_split as $key_value) {
     $kv_split = explode("=", $key_value);
 
-    $key = $kv_split[0];
-    $value = $kv_split[1];
+    $key = trim($kv_split[0]);
+    $value = trim($kv_split[1]);
 
-    $variable_map[$key] = trim($value);
+    $variable_map[$key] = $value;
 
-}
+} 
 
 // for testing locally
 
@@ -24,20 +24,41 @@ $pswd = $variable_map["PASSWORD"];
 $host = $variable_map["HOST"];
 $port = (int) $variable_map["PORT"];
 
-error_log("About to connect!". json_encode($variable_map) ."\n", 3, "./tmp/my-errors.log");
+// json_encode($variable_map) .
+error_log("About to connect!". "\n", 3, "./tmp/my-errors.log");
 
 //echo json_encode($variable_map), "\n";
 
-
+/*
 error_log("db: ". $db ."\n", 3, "./tmp/my-errors.log");
 error_log("user: ". $user ."\n", 3, "./tmp/my-errors.log");
 error_log("pswd: ". $pswd ."\n", 3, "./tmp/my-errors.log");
 error_log("host: ". $host ."\n", 3, "./tmp/my-errors.log");
 error_log("port: ". $port ."\n", 3, "./tmp/my-errors.log");
+*/
 
+
+
+/*
+$link = mysqli_init();
+
+if (!$link) {
+    error_log('mysqli_init failed'."\n", 3, "./tmp/my-errors.log");
+    die('mysqli_init failed');
+}
+error_log("After init: "."\n", 3, "./tmp/my-errors.log");
+*/
+
+
+error_log("Before connect: "."\t".$entityBody."\n", 3, "./tmp/my-errors.log");
+
+
+//$conn = mysqli_real_connect($link, "localhost", $user, $pswd, $db, $port);
 
 
 $conn = mysqli_connect($host, $user, $pswd, $db, $port);
+
+error_log("After connect: "."\t".$entityBody."\n", 3, "./tmp/my-errors.log");
 
 if(!$conn){
     // mysqli_connect_error()
@@ -50,8 +71,12 @@ else if ($conn->connect_errno) {
 }
 
 
-mysqli_set_charset($conn, "utf8");
+//error_log("No connect_error: "."\n", 3, "./tmp/my-errors.log");
 
+
+//mysqli_set_charset($conn, "uft8_general_ci");
+
+//error_log("After set_charset: "."\n", 3, "./tmp/my-errors.log");
 
 
 function get_ip_address()
@@ -67,43 +92,58 @@ function get_ip_address()
     }
 }
 
+error_log("Before get time: "."\t".$entityBody."\n", 3, "./tmp/my-errors.log");
 
 $now = DateTime::createFromFormat('U.u', microtime(true));
 $now_str = $now->format("m-d-Y H:i:s.u");
 
+error_log("After get time: "."\t".$entityBody."\n", 3, "./tmp/my-errors.log");
 
 
+error_log("Time: "."\t".$now_str."\n", 3, "./tmp/my-errors.log");
 
 $entityBody = file_get_contents('php://input');
 
-error_log($now_str."\t".$entityBody."\n", 3, "./tmp/my-errors.log");
+error_log($now_str."\t". "body: ".$entityBody."\n", 3, "./tmp/my-errors.log");
 
 
 $ip = get_ip_address();
 
+error_log("ip: ".$ip."\n", 3, "./tmp/my-errors.log");
+
 //above fine
 
-//$comp = preg_split('/\s+/', $var);
+/*
+error_log("Before explode: "."\n", 3, "./tmp/my-errors.log");
+$input_split = explode("\t",$entityBody);
+error_log("After explode: "."\n", 3, "./tmp/my-errors.log");
+*/
 
-$input_split = preg_split('/\s+/',$entityBody);
+error_log("Before json_decode: "."\n", 3, "./tmp/my-errors.log");
+$input_json = json_decode($entityBody, true);
+error_log("After json_decode: "."\n", 3, "./tmp/my-errors.log");
 
+error_log("input_json: ".json_encode($input_json)."\n", 3, "./tmp/my-errors.log");
 
-//$input_split = explode("\t",$entityBody);
-
+/*
 $user = mysqli_real_escape_string($conn, $input_split[0]);
-
-
 $action = mysqli_real_escape_string($conn, $input_split[1]);
 
+$user = mysqli_real_escape_string($conn, $input_json["studyId"]);
+$action = mysqli_real_escape_string($conn, $input_json["msg"]);
+*/
 
-error_log($now_str."\t".$user."\n", 3, "./tmp/my-errors.log");
-error_log($now_str."\t".$action."\n", 3, "./tmp/my-errors.log");
+
+
+
+$user = mysqli_real_escape_string($conn, $input_json["studyId"]);
+$action =  mysqli_real_escape_string($conn, $input_json["msg"]);
+
+error_log("user: "."$user"."\n", 3, "./tmp/my-errors.log");
+error_log("action: "."$action"."\n", 3, "./tmp/my-errors.log");
+
 
 //run the query to search for the username and password the match
-
-if(strlen($user) == 0 || strlen($action) == 0){
-    return;
-}
 
 $query = "INSERT IGNORE INTO log (id, user, action, ip, timestamp) VALUES (NULL, '$user', '$action', '$ip', now())";
 
