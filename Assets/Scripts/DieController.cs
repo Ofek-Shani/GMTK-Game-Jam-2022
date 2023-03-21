@@ -2,6 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.Networking;
+
+struct InteractionReport {
+    //Variable declaration
+    //Note: I'm explicitly declaring them as public, but they are public by default. You can use private if you choose.
+    public string prolificId;
+    public string studyId;
+    public string sessionId;
+    public string msg;
+
+    public InteractionReport(string prolificId, string msg) {
+        this.prolificId = prolificId;
+        this.msg = msg;
+        this.studyId = "default";
+        this.sessionId = "default";
+    }
+}
 
 public class DieController : MonoBehaviour
 {
@@ -97,6 +114,113 @@ public class DieController : MonoBehaviour
         leftFace.transform.position = new Vector3(transform.position.x - 1.05f, .6f, transform.position.z);
     }
 
+    IEnumerator record(string msg)
+    {
+        //byte[] myData = System.Text.Encoding.UTF8.GetBytes("This is some test data");
+        string url = Application.absoluteURL;
+        string[] urlSplit = url.Split('?');
+        string paramsString = "";
+        string prolificId = "default";
+        string studyId = "default";
+        string sessionId = "default";
+
+
+        // example
+
+        /*
+        https://umich.qualtrics.com/jfe/form/SV_4IoSJSkNUKqxOl0?PROLIFIC_PID=63dd5ec01d3544fa8e02d54d&STUDY_ID=63e14c745dea11fca5cff7c8&SESSION_ID=0wa5514d6rl
+
+        https://www-personal.umich.edu/~peiyaoh/LuckingOut/?PROLIFIC_PID=63dd5ec01d3544fa8e02d54d&amp;STUDY_ID=63e14c745dea11fca5cff7c8&amp;SESSION_ID=0wa5514d6rl
+        */
+
+
+        if(urlSplit.Length > 1){
+            paramsString = urlSplit[1];
+            string[] paramSplit = paramsString.Split("&");
+            if(paramSplit.Length > 0){
+                // PROLIFIC_PID
+                prolificId = paramSplit[0].Split("=")[1];
+            }
+            if(paramSplit.Length > 1){
+                // STUDY_ID
+                studyId = paramSplit[1].Split("=")[1];
+            }
+            if(paramSplit.Length > 1){
+                // SESSION_ID
+                sessionId = paramSplit[2].Split("=")[1];
+            }
+        }
+
+        // Reference code
+        /*
+        var jsonString = JsonUtility.ToJson(jsonData) ?? "";
+        UnityWebRequest request = UnityWebRequest.Put(url, jsonString);
+        request.SetRequestHeader("Content-Type", "application/json");
+        yield return request.Send();
+        */
+
+        Debug.Log("Query Params - prolificId: " + prolificId);
+        Debug.Log("Query Params - studyId: " + studyId);
+        Debug.Log("Query Params - sessionId: " + sessionId);
+        Debug.Log("Params - msg: " + msg);
+
+
+        InteractionReport interactionReport = new InteractionReport(prolificId, msg);
+        interactionReport.studyId = studyId;
+        interactionReport.sessionId = sessionId;
+
+        Debug.Log("interactionReport.prolificId: " + interactionReport.prolificId);
+        Debug.Log("interactionReport.msg: " + interactionReport.msg);
+        Debug.Log("interactionReport.studyId: " + interactionReport.studyId);
+        Debug.Log("interactionReport.sessionId: " + interactionReport.sessionId);
+        
+
+        
+
+
+        string jsonString =  JsonUtility.ToJson(interactionReport);
+        // '{"studyId": "' + studyId + '", "msg": "'+ msg +'"}';  //
+
+        Debug.Log("jsonString: " + jsonString);
+
+        // using (UnityWebRequest www = UnityWebRequest.Put("http://localhost/LuckingOut/service.php", studyId + "\t"+ msg))
+        using (UnityWebRequest www = UnityWebRequest.Put("http://localhost/LuckingOut/service.php", jsonString))
+        {
+            // added
+            www.SetRequestHeader("Content-Type", "application/json");
+
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log("Upload complete!");
+            }
+        }
+    }
+
+    /*
+    IEnumerable record(string msg)
+    {
+        string json = msg;// "{'message':"+ msg + "}";
+        Debug.Log("record" + " => " + json);
+        UnityWebRequest www = UnityWebRequest.Put("https://ptsv3.com/t/testunity/post/", json);
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            Debug.Log("HTTP post complete!");
+        }
+    }
+    */
+
    
 
     void MoveBack()
@@ -111,6 +235,7 @@ public class DieController : MonoBehaviour
         
         Debug.Log(sides[Vector3.up] + " => " + newSides[Vector3.up]);
         sides = newSides;
+        StartCoroutine(record("MoveBack"));
 
         if (chargeDirection != Vector3.zero)
         {
@@ -119,6 +244,8 @@ public class DieController : MonoBehaviour
             else if (chargeDirection == Vector3.down) chargeDirection = Vector3.forward;
             //charge side faces down, resets
             else if (chargeDirection == Vector3.back) chargeDirection = Vector3.zero;
+
+            
         }
     }
    
@@ -134,6 +261,7 @@ public class DieController : MonoBehaviour
 
         Debug.Log(sides[Vector3.up] + " => " + newSides[Vector3.up]);
         sides = newSides;
+        StartCoroutine(record("MoveForward"));
 
         if (chargeDirection != Vector3.zero)
         {
@@ -142,6 +270,8 @@ public class DieController : MonoBehaviour
             else if (chargeDirection == Vector3.down) chargeDirection = Vector3.back;
             //charge side faces down, resets
             else if (chargeDirection == Vector3.forward) chargeDirection = Vector3.zero;
+
+
         }
     }
 
@@ -157,6 +287,7 @@ public class DieController : MonoBehaviour
         
         Debug.Log(sides[Vector3.up] + " => " + newSides[Vector3.up]);
         sides = newSides;
+        StartCoroutine(record("MoveLeft"));
 
         if (chargeDirection != Vector3.zero)
         {
@@ -181,6 +312,7 @@ public class DieController : MonoBehaviour
 
         Debug.Log(sides[Vector3.up] + " => " + newSides[Vector3.up]);
         sides = newSides;
+        StartCoroutine(record("MoveRight"));
 
         if (chargeDirection != Vector3.zero)
         {
