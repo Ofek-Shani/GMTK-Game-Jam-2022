@@ -4,6 +4,18 @@ using UnityEngine;
 using System;
 using UnityEngine.Networking;
 
+struct InteractionReport {
+    //Variable declaration
+    //Note: I'm explicitly declaring them as public, but they are public by default. You can use private if you choose.
+    public string studyId;
+    public string msg;
+
+    public InteractionReport(string studyId, string msg) {
+        this.studyId = studyId;
+        this.msg = msg;
+    }
+}
+
 public class DieController : MonoBehaviour
 {
     public GameObject cameraObj;
@@ -114,9 +126,34 @@ public class DieController : MonoBehaviour
             }
         }
 
+        // Reference code
+        /*
+        var jsonString = JsonUtility.ToJson(jsonData) ?? "";
+        UnityWebRequest request = UnityWebRequest.Put(url, jsonString);
+        request.SetRequestHeader("Content-Type", "application/json");
+        yield return request.Send();
+        */
 
-        using (UnityWebRequest www = UnityWebRequest.Put("http://localhost/LuckingOut/service.php", studyId + "\t"+ msg))
+        Debug.Log("Query Params - studyId: " + studyId);
+        Debug.Log("Query Params - msg: " + msg);
+
+
+        InteractionReport interactionReport = new InteractionReport(studyId, msg);
+        Debug.Log("interactionReport.studyId: " + interactionReport.studyId);
+        Debug.Log("interactionReport.msg: " + interactionReport.msg);
+
+
+        string jsonString =  JsonUtility.ToJson(interactionReport);
+        // '{"studyId": "' + studyId + '", "msg": "'+ msg +'"}';  //
+
+        Debug.Log("jsonString: " + jsonString);
+
+        // using (UnityWebRequest www = UnityWebRequest.Put("http://localhost/LuckingOut/service.php", studyId + "\t"+ msg))
+        using (UnityWebRequest www = UnityWebRequest.Put("http://localhost/LuckingOut/service.php", jsonString))
         {
+            // added
+            www.SetRequestHeader("Content-Type", "application/json");
+
             yield return www.SendWebRequest();
 
             if (www.result != UnityWebRequest.Result.Success)
