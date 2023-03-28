@@ -23,6 +23,11 @@ function get_ip_address()
 
 $ip = get_ip_address();
 
+write_log("ip: ".$ip);
+
+
+
+
 $file = file_get_contents('./.env', true);
 
 $file_split = explode("\n", $file);
@@ -86,12 +91,15 @@ $conn = mysqli_connect($host, $user, $pswd, $db, $port);
 if(!$conn){
     // mysqli_connect_error()
     write_log("Error: ".mysqli_connect_error());
+    exit();
 }
 else if ($conn->connect_errno) {
     write_log("$conn->connect_error");
     echo "Failed to connect to MySQL: " . $conn->connect_error;
     exit();
 }
+
+
 
 
 //error_log("No connect_error: "."\n", 3, "./tmp/my-errors.log");
@@ -112,6 +120,8 @@ write_log("body: ".$entityBody);
 
 
 
+
+
 //error_log("ip: ".$ip."\n", 3, "./tmp/my-errors.log");
 
 //above fine
@@ -123,7 +133,7 @@ error_log("After explode: "."\n", 3, "./tmp/my-errors.log");
 */
 
 //error_log("Before json_decode: "."\n", 3, "./tmp/my-errors.log");
-$input_json = json_decode($entityBody, true);
+$input_json = json_decode(urldecode($entityBody), true);
 
 /*
 error_log("After json_decode: "."\n", 3, "./tmp/my-errors.log");
@@ -155,8 +165,11 @@ error_log("sessionId: "."$sessionId"."\n", 3, "./tmp/my-errors.log");
 */
 
 
+
+
 if(strlen($user) < 10 || strlen($action) < 1 || strlen($studyId) < 10 || strlen($sessionId) < 10){
     write_log("Issue: params invalid!");
+    exit();
 }
 else {
     //run the query to search for the username and password the match
@@ -173,19 +186,22 @@ else {
     if (!$result) {
         $msg = "Unable to a insert a record because : " . mysqli_error($conn);
         write_log($msg);
+
+
+
         die($msg);
     }
 
 
     $insert_id = mysqli_insert_id($conn);
     write_log("Successfullly insert a record!");
+
 }
 
 
 
 $json_result = new stdClass();
 $json_result->message = "ok";
-
 
 echo json_encode($json_result), "\n";
 
