@@ -184,7 +184,7 @@ public class DieController : MonoBehaviour
         Debug.Log("jsonString: " + jsonString);
 
         // using (UnityWebRequest www = UnityWebRequest.Put("http://localhost/LuckingOut/service.php", studyId + "\t"+ msg))
-        using (UnityWebRequest www = UnityWebRequest.Put("https://d3game.dev.isr.umich.edu/service.php", jsonString))
+        using (UnityWebRequest www = UnityWebRequest.Post("https://d3game.dev.isr.umich.edu/service.php", jsonString))
         {
             // added, but does not work in deployment space
             www.SetRequestHeader("Content-Type", "application/json");
