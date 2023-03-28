@@ -187,10 +187,10 @@ public class DieController : MonoBehaviour
         using (UnityWebRequest www = UnityWebRequest.Post("https://d3game.dev.isr.umich.edu/service.php", jsonString))
         {
             // added, but does not work in deployment space
-            www.SetRequestHeader("Content-Type", "application/json");
+            //www.SetRequestHeader("Content-Type", "application/json");
 
             // application/x-www-form-urlencoded
-            //www.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            www.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
 
             yield return www.SendWebRequest();
