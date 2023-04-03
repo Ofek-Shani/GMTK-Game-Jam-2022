@@ -29,7 +29,9 @@ public class MainMenuLevelButtons : MonoBehaviour
     }
 
     private void changeLevel() {
+        StartCoroutine(QueryHelper.record("ChangeLevel:" + level));
         UnityEngine.SceneManagement.SceneManager.LoadScene("Level " + level);
+
     }
 
 }
