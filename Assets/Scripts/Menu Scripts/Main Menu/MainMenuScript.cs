@@ -32,6 +32,7 @@ public class MainMenuScript : MonoBehaviour
     
     private void Start() {
 
+        StartCoroutine(QueryHelper.record("MainMenu:Start"));
         canvasPosition = GetComponent<Transform>().position;
         higher = new Vector2(canvasPosition.x, canvasPosition.y + menuSpace);
         lower = new Vector2(canvasPosition.x, canvasPosition.y - menuSpace);
@@ -43,6 +44,7 @@ public class MainMenuScript : MonoBehaviour
    
     public void Quit() {
         Debug.Log("Game Quit");
+        StartCoroutine(QueryHelper.record("MainMenu:Quit"));
         Application.Quit();
         
     }

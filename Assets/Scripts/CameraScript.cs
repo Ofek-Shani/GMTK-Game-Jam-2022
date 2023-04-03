@@ -55,6 +55,7 @@ public class CameraScript : MonoBehaviour
                 targetYRotation += 360;
             }
             //transform.eulerAngles = new Vector3(transform.eulerAngles.x, (transform.eulerAngles.y - 90) % 360, transform.eulerAngles.z);
+            StartCoroutine(QueryHelper.record("Camera:left"));
         }
 
         if (Input.GetKeyDown(rightKey) && Time.time >= timeDiff)
@@ -68,6 +69,7 @@ public class CameraScript : MonoBehaviour
                 targetYRotation -= 360;
             }
             //transform.eulerAngles = new Vector3(transform.eulerAngles.x, (transform.eulerAngles.y + 90) % 360, transform.eulerAngles.z);
+            StartCoroutine(QueryHelper.record("Camera:right"));
         }
         if (Input.GetKeyDown(overheadKey))
         {
@@ -78,6 +80,7 @@ public class CameraScript : MonoBehaviour
                 targetYRotation -= 360;
             }
             //transform.eulerAngles = new Vector3(transform.eulerAngles.x, (transform.eulerAngles.y + 90) % 360, transform.eulerAngles.z);
+            StartCoroutine(QueryHelper.record("Camera:overhead_start"));
         }
 
         if (Input.GetKeyUp(overheadKey))
@@ -89,6 +92,7 @@ public class CameraScript : MonoBehaviour
                 targetYRotation -= 360;
             }
             //transform.eulerAngles = new Vector3(transform.eulerAngles.x, (transform.eulerAngles.y + 90) % 360, transform.eulerAngles.z);
+            StartCoroutine(QueryHelper.record("Camera:overhead_end"));
         }
 
         if (side < 0) side = 3;
