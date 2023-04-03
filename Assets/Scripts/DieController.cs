@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using UnityEngine.Networking;
 
+/*
 struct InteractionReport {
     //Variable declaration
     //Note: I'm explicitly declaring them as public, but they are public by default. You can use private if you choose.
@@ -19,6 +20,7 @@ struct InteractionReport {
         this.sessionId = "default";
     }
 }
+*/
 
 public class DieController : MonoBehaviour
 {
@@ -114,6 +116,7 @@ public class DieController : MonoBehaviour
         leftFace.transform.position = new Vector3(transform.position.x - 1.05f, .6f, transform.position.z);
     }
 
+    /*
     IEnumerator record(string msg)
     {
         //byte[] myData = System.Text.Encoding.UTF8.GetBytes("This is some test data");
@@ -126,12 +129,6 @@ public class DieController : MonoBehaviour
 
 
         // example
-
-        /*
-        https://umich.qualtrics.com/jfe/form/SV_4IoSJSkNUKqxOl0?PROLIFIC_PID=63dd5ec01d3544fa8e02d54d&STUDY_ID=63e14c745dea11fca5cff7c8&SESSION_ID=0wa5514d6rl
-
-        https://www-personal.umich.edu/~peiyaoh/LuckingOut/?PROLIFIC_PID=63dd5ec01d3544fa8e02d54d&amp;STUDY_ID=63e14c745dea11fca5cff7c8&amp;SESSION_ID=0wa5514d6rl
-        */
 
 
         if(urlSplit.Length > 1){
@@ -151,13 +148,6 @@ public class DieController : MonoBehaviour
             }
         }
 
-        // Reference code
-        /*
-        var jsonString = JsonUtility.ToJson(jsonData) ?? "";
-        UnityWebRequest request = UnityWebRequest.Put(url, jsonString);
-        request.SetRequestHeader("Content-Type", "application/json");
-        yield return request.Send();
-        */
 
         Debug.Log("Query Params - prolificId: " + prolificId);
         Debug.Log("Query Params - studyId: " + studyId);
@@ -183,7 +173,7 @@ public class DieController : MonoBehaviour
 
         Debug.Log("jsonString: " + jsonString);
 
-        // using (UnityWebRequest www = UnityWebRequest.Put("http://localhost/LuckingOut/service.php", studyId + "\t"+ msg))
+        // using (UnityWebRequest www = UnityWebRequest.Put("http://localhost/LuckingOut/service.php", jsonString))
         using (UnityWebRequest www = UnityWebRequest.Post("https://d3game.dev.isr.umich.edu/service.php", jsonString))
         {
             // added, but does not work in deployment space
@@ -205,26 +195,8 @@ public class DieController : MonoBehaviour
             }
         }
     }
-
-    /*
-    IEnumerable record(string msg)
-    {
-        string json = msg;// "{'message':"+ msg + "}";
-        Debug.Log("record" + " => " + json);
-        UnityWebRequest www = UnityWebRequest.Put("https://ptsv3.com/t/testunity/post/", json);
-        yield return www.SendWebRequest();
-
-        if (www.result != UnityWebRequest.Result.Success)
-        {
-            Debug.Log(www.error);
-        }
-        else
-        {
-            Debug.Log("HTTP post complete!");
-        }
-    }
     */
-
+    
    
 
     void MoveBack()
@@ -239,7 +211,7 @@ public class DieController : MonoBehaviour
         
         Debug.Log(sides[Vector3.up] + " => " + newSides[Vector3.up]);
         sides = newSides;
-        StartCoroutine(record("MoveBack"));
+        StartCoroutine(QueryHelper.record("MoveBack"));
 
         if (chargeDirection != Vector3.zero)
         {
@@ -265,7 +237,8 @@ public class DieController : MonoBehaviour
 
         Debug.Log(sides[Vector3.up] + " => " + newSides[Vector3.up]);
         sides = newSides;
-        StartCoroutine(record("MoveForward"));
+        //StartCoroutine(record("MoveForward"));
+        StartCoroutine(QueryHelper.record("MoveForward"));
 
         if (chargeDirection != Vector3.zero)
         {
@@ -291,7 +264,8 @@ public class DieController : MonoBehaviour
         
         Debug.Log(sides[Vector3.up] + " => " + newSides[Vector3.up]);
         sides = newSides;
-        StartCoroutine(record("MoveLeft"));
+        //StartCoroutine(record("MoveLeft"));
+        StartCoroutine(QueryHelper.record("MoveLeft"));
 
         if (chargeDirection != Vector3.zero)
         {
@@ -316,7 +290,8 @@ public class DieController : MonoBehaviour
 
         Debug.Log(sides[Vector3.up] + " => " + newSides[Vector3.up]);
         sides = newSides;
-        StartCoroutine(record("MoveRight"));
+        //StartCoroutine(record("MoveRight"));
+        StartCoroutine(QueryHelper.record("MoveRight"));
 
         if (chargeDirection != Vector3.zero)
         {

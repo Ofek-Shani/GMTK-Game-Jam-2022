@@ -383,6 +383,7 @@ public class ManageGame : MonoBehaviour
 
     public void LevelComplete()
     {
+        StartCoroutine(QueryHelper.record("LevelComplete:" + levelID));
         levelFinishing = true;
         furthestLevel = Mathf.Max(levelID, furthestLevel);
         winSwitchInstance.GetComponentInChildren<Animator>().SetTrigger("Go");
@@ -396,9 +397,11 @@ public class ManageGame : MonoBehaviour
         yield return new WaitForSecondsRealtime(5);
         if (levelID != 18) {
             SceneManager.LoadSceneAsync("Level " + (levelID + 1));
+            StartCoroutine(QueryHelper.record("LoadLevel:" + (levelID + 1)));
         }
         else {
             SceneManager.LoadSceneAsync("End Screen");
+            StartCoroutine(QueryHelper.record("EndScreen"));
         }
     }
 
