@@ -45,8 +45,9 @@ public class MainMenuScript : MonoBehaviour
     public void Quit() {
         Debug.Log("Game Quit");
         StartCoroutine(QueryHelper.record("MainMenu:Quit"));
-        Application.Quit();
         
+        // disable quiting feature: 2023.04.11
+        //Application.Quit();
     }
 
     public void changeLevel(int level) {
@@ -56,6 +57,8 @@ public class MainMenuScript : MonoBehaviour
     }
 
     public void changeMenu(int from, int to) {
+        StartCoroutine(QueryHelper.record("ChangeMenu:" + from + "_to_" + to));
+
         StartCoroutine(menuMove(determineMenu(from), from > to, true));
         StartCoroutine(menuMove(determineMenu(to), to > from, false));
 
