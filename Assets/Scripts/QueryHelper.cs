@@ -23,10 +23,10 @@ struct InteractionReport {
 public static class QueryHelper
 {
     // dev
-    //public static string serverURL = "https://d3game.dev.isr.umich.edu/service.php";
+    public static string serverURL = "https://d3game.dev.isr.umich.edu/service.php";
 
     // testing
-    public static string serverURL = "http://localhost/LuckingOut/service.php";
+    //public static string serverURL = "http://localhost/LuckingOut/service.php";
 
 
     public static IEnumerator record(string msg)

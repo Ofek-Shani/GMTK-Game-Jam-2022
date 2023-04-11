@@ -38,6 +38,7 @@ public class LevelMenuScript : MonoBehaviour
             }
         } 
         if (Input.GetKeyDown(KeyCode.R) && !ManageGame.levelFinishing) {
+            StartCoroutine(QueryHelper.record("RestartLevel"));
             restartLevel();
         }
     }
@@ -57,8 +58,11 @@ public class LevelMenuScript : MonoBehaviour
         UniversalAdditionalCameraData camData = cam.GetComponent<Camera>().GetComponent<UniversalAdditionalCameraData>();
         
 
+        
+
         if (menuType == 0) {
             menuType++;
+            StartCoroutine(QueryHelper.record("ChangeActiveMenu:" + menuType));
             camData.renderPostProcessing = true;
             die.canControl = false;
             StartCoroutine(menuMove(pause, false, false));
@@ -67,12 +71,14 @@ public class LevelMenuScript : MonoBehaviour
 
             if (up) {
                 menuType++;
+                StartCoroutine(QueryHelper.record("ChangeActiveMenu:" + menuType));
                 StartCoroutine(menuMove(pause, true, true));
                 StartCoroutine(menuMove(options, false, false));
             }
             else {
                 StartCoroutine(menuMove(pause, false, true));
                 menuType--;
+                StartCoroutine(QueryHelper.record("ChangeActiveMenu:" + menuType));
                 camData.renderPostProcessing = false;
                 die.canControl = true;
             }
@@ -80,6 +86,7 @@ public class LevelMenuScript : MonoBehaviour
         }
         else {
             menuType--;
+            StartCoroutine(QueryHelper.record("ChangeActiveMenu:" + menuType));
             StartCoroutine(menuMove(pause, true, false));
             StartCoroutine(menuMove(options, false, true));
             
