@@ -10,6 +10,7 @@ struct InteractionReport {
     public string prolificId;
     public string studyId;
     public string sessionId;
+    public string domainURL;
     public string msg;
 
     public InteractionReport(string prolificId, string msg) {
@@ -17,16 +18,20 @@ struct InteractionReport {
         this.msg = msg;
         this.studyId = "default";
         this.sessionId = "default";
+        this.domainURL = "default";
     }
 }
 
 public static class QueryHelper
 {
     // dev
-    public static string serverURL = "https://d3game.dev.isr.umich.edu/service.php";
+    //public static string serverURL = "https://d3game.dev.isr.umich.edu/service.php";
 
     // testing
     //public static string serverURL = "http://localhost/LuckingOut/service.php";
+
+    // adaptable
+    public static string serverURL = Application.absoluteURL.Split('?')[0] + "service.php";
 
 
     public static IEnumerator record(string msg)
@@ -38,6 +43,7 @@ public static class QueryHelper
         string prolificId = "default";
         string studyId = "default";
         string sessionId = "default";
+        string domainURL = urlSplit[0];
 
 
         // example
@@ -77,17 +83,22 @@ public static class QueryHelper
         Debug.Log("Query Params - prolificId: " + prolificId);
         Debug.Log("Query Params - studyId: " + studyId);
         Debug.Log("Query Params - sessionId: " + sessionId);
+        Debug.Log("Query Params - domainURL: " + domainURL);
+        
+
         Debug.Log("Params - msg: " + msg);
 
 
         InteractionReport interactionReport = new InteractionReport(prolificId, msg);
         interactionReport.studyId = studyId;
         interactionReport.sessionId = sessionId;
+        interactionReport.domainURL = domainURL;
 
         Debug.Log("interactionReport.prolificId: " + interactionReport.prolificId);
         Debug.Log("interactionReport.msg: " + interactionReport.msg);
         Debug.Log("interactionReport.studyId: " + interactionReport.studyId);
         Debug.Log("interactionReport.sessionId: " + interactionReport.sessionId);
+        Debug.Log("interactionReport.domainURL: " + interactionReport.domainURL);
         
 
         
@@ -97,6 +108,7 @@ public static class QueryHelper
         // '{"studyId": "' + studyId + '", "msg": "'+ msg +'"}';  //
 
         Debug.Log("jsonString: " + jsonString);
+
 
         // using (UnityWebRequest www = UnityWebRequest.Put("http://localhost/LuckingOut/service.php", studyId + "\t"+ msg))
         //using (UnityWebRequest www = UnityWebRequest.Post("https://d3game.dev.isr.umich.edu/service.php", jsonString))
